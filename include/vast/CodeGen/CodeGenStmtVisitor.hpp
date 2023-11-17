@@ -407,8 +407,20 @@ namespace vast::cg {
         // Assembly Statements
         //
 
-        // operation VisitAsmStmt(const clang::AsmStmt *stmt)
-        // operation VisitGCCAsmStmt(const clang::GCCAsmStmt *stmt)
+        //operation VisitAsmStmt(const clang::AsmStmt *stmt);
+        operation VisitGCCAsmStmt(const clang::GCCAsmStmt *stmt) {
+            if (stmt->isSimple()) {
+                return make< hl::InlineAsmOp >(meta_location(stmt),
+                                               hl::VoidType(),
+                                               stmt->generateAsmString(context().actx),
+                                               stmt->isVolatile(),
+                                               stmt->isAsmGoto()
+                                               );
+            }
+            VAST_UNREACHABLE("complicated asm");
+
+
+        };
         // operation VisVisitMSAsmStmtitAsmStmt(const clang::MSAsmStmt *stmt)
 
         //
